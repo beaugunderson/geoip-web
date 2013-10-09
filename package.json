@@ -1,0 +1,17 @@
+{
+  "name": "geoip-web",
+  "version": "0.0.0",
+  "description": "A very small server that answers queries via GeoLite2-City.",
+  "author": "Beau Gunderson <beau@beaugunderson.com",
+  "main": "index.js",
+  "dependencies": {
+    "express": "~3.4.0",
+    "geoip2": "~0.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT"
+}
