@@ -25,6 +25,12 @@ function distance(lat1, lon1, lat2, lon2) {
 function resultFromAddress(address) {
   address = db.getGeoData(address);
 
+  if (!address || !address.location) {
+    return {
+      location: 'unknown'
+    }
+  }
+
   var kilometersFromDC = distance(address.location.latitude,
     address.location.longitude, DC_LATITUDE, DC_LONGITUDE);
 
@@ -41,16 +47,16 @@ app.get('/', function (req, res) {
   res.json(resultFromAddress(req.connection.remoteAddress));
 });
 
+app.get('/favicon.ico', function (req, res) {
+  res.send(404);
+});
+
 app.get('/:address', function (req, res) {
   if (!req.param('address')) {
     return res.send(500);
   }
 
   res.json(resultFromAddress(req.param('address')));
-});
-
-app.get('/favicon.ico', function (req, res) {
-  res.send(404);
 });
 
 app.listen(process.env.PORT || 3000);
