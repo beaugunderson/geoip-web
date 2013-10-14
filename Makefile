@@ -10,5 +10,5 @@ GeoLite2-City.mmdb:
 	wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
 	gunzip GeoLite2-City.mmdb.gz
 
-node_modules:
+node_modules: package.json
 	npm install
