@@ -23,21 +23,23 @@ function distance(lat1, lon1, lat2, lon2) {
 }
 
 function resultFromAddress(address) {
-  address = db.getGeoData(address);
+  var geoData = db.getGeoData(address);
 
-  if (!address || !address.location) {
+  if (!geoData || !geoData.location) {
     return {
+      ip: address,
       location: 'unknown'
     }
   }
 
-  var kilometersFromDC = distance(address.location.latitude,
-    address.location.longitude, DC_LATITUDE, DC_LONGITUDE);
+  var kilometersFromDC = distance(geoData.location.latitude,
+    geoData.location.longitude, DC_LATITUDE, DC_LONGITUDE);
 
   return {
+    ip: address,
     kilometersFromDC: kilometersFromDC,
     withinHundredKilometers: kilometersFromDC <= 100,
-    location: address.location
+    location: geoData.location
   };
 }
 
