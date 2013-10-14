@@ -43,8 +43,10 @@ function resultFromAddress(address) {
 
 var app = express();
 
+app.enable('trust proxy');
+
 app.get('/', function (req, res) {
-  res.json(resultFromAddress(req.connection.remoteAddress));
+  res.jsonp(resultFromAddress(req.connection.remoteAddress));
 });
 
 app.get('/favicon.ico', function (req, res) {
@@ -56,7 +58,7 @@ app.get('/:address', function (req, res) {
     return res.send(500);
   }
 
-  res.json(resultFromAddress(req.param('address')));
+  res.jsonp(resultFromAddress(req.param('address')));
 });
 
 app.listen(process.env.PORT || 3000);
