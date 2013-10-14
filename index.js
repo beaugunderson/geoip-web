@@ -1,5 +1,6 @@
 var express = require('express');
 var GeoIP2 = require('geoip2');
+var _ = require('lodash');
 
 var db = new GeoIP2('./GeoLite2-City.mmdb');
 
@@ -48,7 +49,7 @@ var app = express();
 app.enable('trust proxy');
 
 app.get('/', function (req, res) {
-  res.jsonp(resultFromAddress(req.connection.remoteAddress));
+  res.jsonp(resultFromAddress(_.last(req.ips)));
 });
 
 app.get('/favicon.ico', function (req, res) {
