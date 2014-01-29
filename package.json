@@ -1,17 +1,20 @@
 {
   "name": "geoip-web",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A very small server that answers queries via GeoLite2-City.",
   "author": "Beau Gunderson <beau@beaugunderson.com>",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tfrce/node-geoip-web.git"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
   "dependencies": {
     "express": "~3.4.8",
     "geoip2": "~0.0.2",
     "lodash": "~2.4.1"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "MIT"
 }
