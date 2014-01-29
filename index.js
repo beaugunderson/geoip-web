@@ -22,20 +22,20 @@ function approximateDistance(lat1, lon1, lat2, lon2) {
 
 function resultFromAddress(req, opt_address) {
   if (!opt_address) {
-    opt_address = _.last(req.ips);
+    opt_address = _.last(req.ips) || req.connection.remoteAddress;
   }
 
   var geoData = db.getGeoData(opt_address);
 
   if (!geoData || !geoData.location) {
     return {
-      ip: address,
+      ip: opt_address,
       location: 'unknown'
-    }
+    };
   }
 
   var result = {
-    ip: address
+    ip: opt_address
   };
 
   if (req.param('fields')) {
