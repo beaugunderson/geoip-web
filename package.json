@@ -5,9 +5,9 @@
   "author": "Beau Gunderson <beau@beaugunderson.com>",
   "main": "index.js",
   "dependencies": {
-    "express": "~3.4.0",
+    "express": "~3.4.8",
     "geoip2": "~0.0.2",
-    "lodash": "~2.2.1"
+    "lodash": "~2.4.1"
   },
   "devDependencies": {},
   "scripts": {
