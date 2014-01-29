@@ -4,11 +4,8 @@ var _ = require('lodash');
 
 var db = new GeoIP2('./GeoLite2-City.mmdb');
 
-var DC_LATITUDE = 38.8951;
-var DC_LONGITUDE = -77.0367;
-
 // Uses equirectangular approximation for speed
-function distance(lat1, lon1, lat2, lon2) {
+function approximateDistance(lat1, lon1, lat2, lon2) {
   lat1 = lat1 * Math.PI / 180;
   lon1 = lon1 * Math.PI / 180;
 
@@ -23,8 +20,12 @@ function distance(lat1, lon1, lat2, lon2) {
   return Math.sqrt(x * x + y * y) * R;
 }
 
-function resultFromAddress(address) {
-  var geoData = db.getGeoData(address);
+function resultFromAddress(req, opt_address) {
+  if (!opt_address) {
+    opt_address = _.last(req.ips);
+  }
+
+  var geoData = db.getGeoData(opt_address);
 
   if (!geoData || !geoData.location) {
     return {
@@ -33,15 +34,32 @@ function resultFromAddress(address) {
     }
   }
 
-  var kilometersFromDC = distance(geoData.location.latitude,
-    geoData.location.longitude, DC_LATITUDE, DC_LONGITUDE);
-
-  return {
-    ip: address,
-    kilometersFromDC: kilometersFromDC,
-    withinHundredKilometers: kilometersFromDC <= 100,
-    location: geoData.location
+  var result = {
+    ip: address
   };
+
+  if (req.param('fields')) {
+    var fields = req.param('fields').split(',');
+
+    fields.forEach(function (field) {
+      result[field] = geoData[field];
+    });
+  } else {
+    result.country = geoData.country;
+    result.location = geoData.location;
+  }
+
+  if (req.param('lat') && req.param('lon') && req.param('distance')) {
+    var lat = parseFloat(req.param('lat'), 10);
+    var lon = parseFloat(req.param('lon'), 10);
+
+    var distance = parseInt(req.param('distance'), 10);
+
+    result.distance = approximateDistance(geoData.location.latitude,
+      geoData.location.longitude, lat, lon) < distance;
+  }
+
+  return result;
 }
 
 var app = express();
@@ -49,7 +67,7 @@ var app = express();
 app.enable('trust proxy');
 
 app.get('/', function (req, res) {
-  res.jsonp(resultFromAddress(_.last(req.ips)));
+  res.jsonp(resultFromAddress(req));
 });
 
 app.get('/favicon.ico', function (req, res) {
@@ -61,7 +79,7 @@ app.get('/:address', function (req, res) {
     return res.send(500);
   }
 
-  res.jsonp(resultFromAddress(req.param('address')));
+  res.jsonp(resultFromAddress(req, req.param('address')));
 });
 
 app.listen(process.env.PORT || 3000);
